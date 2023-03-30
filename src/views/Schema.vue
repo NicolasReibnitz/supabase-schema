@@ -72,6 +72,29 @@
 
   const isDragging = ref(false)
   const isDraggingChild = ref(false)
+  const tables = computed(() => {
+    const result = state.tables
+    console.log('result: ', result)
+    Object.keys(result).forEach((key) => {
+      console.log('key: ', key)
+      console.log('result[key]: ', result[key].columns)
+      result[key].columns = result[key].columns?.filter((column: any) => {
+        if (column.title.includes('_id')) {
+          column.title = column.title + ' *'
+        }
+        if (column.title.includes('_at') && column.format === 'timestamp') {
+          return false
+        }
+        return true
+      })
+    })
+    // for (const table of result) {
+    //   console.log('table:', table)
+    // }
+    console.log('result: ', result)
+    return result
+  })
+  console.log('tables: ', tables.value)
 
   function checkIsTrackpad(e: any) {
     var isTrackpad = false
@@ -165,13 +188,15 @@
 
 <style lang="postcss">
   .selection-area {
-    background: rgba(16, 185, 129, 0.055);
     border: 2px solid rgb(16, 185, 129);
     border-radius: 0.1em;
+    background: rgba(16, 185, 129, 0.055);
   }
+
   .selected {
     @apply !border-green-500;
   }
+
   .container {
     @apply !max-w-none;
   }
